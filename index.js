@@ -4,12 +4,25 @@ const mongoose = require('mongoose');
 const { title } = require("process");
 const app=express();
 const port=3002;
-
+app.use(express.json())
+app.use(express.urlencoded({extended: true}));
 // create product schema
 const productSchema = new mongoose.Schema({
-    title: String,
-    price: Number,
-    description: String,
+    // title: String,
+    title:{
+        type :String,
+        required:true
+    },
+    // price: Number,
+    price:{
+        type:Number,
+        required:true
+    },
+    // description: String,
+    description:{
+        type:String,
+        required:true
+    },
     createdAt: {
         type:Date,
         default: Date.now
@@ -39,6 +52,44 @@ const connectDB = async  () =>{
 // });
 app.get("/",(req,res)=>{
     res.send("BISMILLAH")
+});
+app.post("/products", async (req,res)=>{
+    try{
+        // get data from request body
+        // const title =req.body.title;
+        // const price= req.body.price;
+        // const description=req.body.description; 
+        // const newProduct = new Product({
+        //     // title:title,
+        //     // price:price,
+        //     // desccription:description,
+
+        //     title:req.body.title,
+        //     price:req.body.price,
+        //     description:req.body.description,
+
+        //     // title,
+        //     // price,
+        //     // description,
+        // })
+        // const productData= await newProduct.save();
+        const productData = await Product.insertMany([
+            {
+                title: "iphone 5",
+                price: 70,
+                description:"beautiful phone"
+            },
+            {
+                title: "iphone 4",
+                price: 20,
+                description:"beautiful phone"
+            }
+        ]);
+
+        res.status(201).send(productData);
+    }catch(error){
+        res.status(500).send({message: error.message})
+    }
 })
 app.listen(port, async ()=>{
     console.log(`server is running at http://localhost:${port}`);
