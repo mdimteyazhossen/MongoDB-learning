@@ -128,6 +128,29 @@ app.get("/products/:id",async (req,res) =>{
     }
 })
 
+app.delete("/products/:id", async (req,res)=>{
+    try {
+        const id = req.params.id;
+        const product = await Product.deleteOne({_id:id})
+        if(product){
+            // res.status(200).send(product)
+            res.status(200).send({
+                success:true,
+                mmessage:"delete single product",
+                data: product
+            })
+        }
+        else{
+            res.status(404).send({
+                success:false,
+                message: "product not found"
+            })
+        }
+    } catch (error) {
+        res.statusCode(500).send({ message: error.message });
+    }
+})
+
 app.listen(port, async ()=>{
     console.log(`server is running at http://localhost:${port}`);
     await connectDB();
