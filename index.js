@@ -72,17 +72,18 @@ app.post("/products", async (req,res)=>{
 app.get("/products",async (req,res) =>{
     try {
         const price=req.query.price;
+        const rating=req.query.rating;
         let products;
         // const products = await Product.find({price:{$lte:300}});
         // const products = await Product.find().limit(2);
-        if(price){
+        if(price && rating){
             // res.status(200).send(products)
             // res.status(200).send({
             //     success:true,
             //     mmessage:"return single products",
             //     data: product
             // })
-            products =await Product.find({price:{$lte:300}})
+            products =await Product.find({$and:[{price: {$gt:500}},{rating:{$gt:4}}]})
         }
         else{
             // res.status(404).send({
