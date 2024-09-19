@@ -54,7 +54,6 @@ app.get("/",(req,res)=>{
 app.post("/products", async (req,res)=>{
     try{
         const newProduct = new Product({
-
             title:req.body.title,
             price:req.body.price,
             rating:req.body.rating,
@@ -83,17 +82,19 @@ app.get("/products",async (req,res) =>{
             //     mmessage:"return single products",
             //     data: product
             // })
-            products =await Product.find({$and:[{price: {$gt:500}},{rating:{$gt:4}}]})
+            // products =await Product.find({$and:[{price: {$gt:500}},{rating:{$gt:4}}]}).countDocuments();
+            // products =await Product.find({$and:[{price: {$gt:500}},{rating:{$gt:4}}]}).sort({price:1});
+            products =await Product.find({$and:[{price: {$gt:500}},{rating:{$gt:4}}]}).sort({price:1}).select({title:1});
         }
         else{
             // res.status(404).send({
             //     message: "products not found"
             // })
-            res.status(404).send({
-                success:false,
-                message: "products not found"
-            })
+            products =await Product.find().sort({price:-1}).select({title:1});
+            // products =await Product.find().sort({price:-1});
+            // products =await Product.find().countDocuments();
         }
+        res.send(products)
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
