@@ -66,7 +66,7 @@ app.post("/products", async (req,res)=>{
 
 app.get("/products",async (req,res) =>{
     try {
-        const products = await Product.find();
+        const products = await Product.find({price:{$lte:300}});
         // const products = await Product.find().limit(2);
         if(products){
             // res.status(200).send(products)
@@ -86,7 +86,7 @@ app.get("/products",async (req,res) =>{
             })
         }
     } catch (error) {
-        res.statusCode(500).send({ message: error.message });
+        res.status(500).send({ message: error.message });
     }
 })
 
