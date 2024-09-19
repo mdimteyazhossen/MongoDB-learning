@@ -43,57 +43,91 @@ const connectDB = async  () =>{
     process.exit(1);
  }
 }
-// mongoose.connect('mongodb://127.0.0.1:27017/testProductDB')
-// .then(()=> console.log("db is connected"))
-// .catch((error)=>{
-//     console.log("db is not conected");
-//     console.log(error);
-//     process.exit(1);
-// });
 app.get("/",(req,res)=>{
     res.send("BISMILLAH")
 });
+// create
 app.post("/products", async (req,res)=>{
     try{
-        // get data from request body
-        // const title =req.body.title;
-        // const price= req.body.price;
-        // const description=req.body.description; 
-        // const newProduct = new Product({
-        //     // title:title,
-        //     // price:price,
-        //     // desccription:description,
+        const newProduct = new Product({
 
-        //     title:req.body.title,
-        //     price:req.body.price,
-        //     description:req.body.description,
-
-        //     // title,
-        //     // price,
-        //     // description,
-        // })
-        // const productData= await newProduct.save();
-        const productData = await Product.insertMany([
-            {
-                title: "iphone 5",
-                price: 70,
-                description:"beautiful phone"
-            },
-            {
-                title: "iphone 4",
-                price: 20,
-                description:"beautiful phone"
-            }
-        ]);
+            title:req.body.title,
+            price:req.body.price,
+            description:req.body.description,
+        })
+        const productData= await newProduct.save();
+        
 
         res.status(201).send(productData);
     }catch(error){
         res.status(500).send({message: error.message})
     }
 })
+
+app.get("/products",async (req,res) =>{
+    try {
+        const products = await Product.find();
+        // const products = await Product.find().limit(2);
+        if(products){
+            // res.status(200).send(products)
+            res.status(200).send({
+                success:true,
+                mmessage:"return single products",
+                data: product
+            })
+        }
+        else{
+            // res.status(404).send({
+            //     message: "products not found"
+            // })
+            res.status(404).send({
+                success:false,
+                message: "products not found"
+            })
+        }
+    } catch (error) {
+        res.statusCode(500).send({ message: error.message });
+    }
+})
+
+app.get("/products/:id",async (req,res) =>{
+    try {
+        const id=req.params.id;
+        const product = await Product.findOne({_id: id});
+        // const product = await Product.findOne({_id: id},{title:1, _id:0});
+        // const product = await Product.findOne({_id: id}).select
+        // ({title:1, _id:0});
+        // const products = await Product.find().limit(2);
+        if(product){
+            // res.status(200).send(product)
+            res.status(200).send({
+                success:true,
+                mmessage:"return single product",
+                data: product
+            })
+        }
+        else{
+            res.status(404).send({
+                success:false,
+                message: "product not found"
+            })
+        }
+        res.send(product);
+    } catch (error) {
+        res.statusCode(500).send({ message: error.message });
+    }
+})
+
 app.listen(port, async ()=>{
     console.log(`server is running at http://localhost:${port}`);
     await connectDB();
 })
 
 // DATABASE -> collections (table) -> document (record / row)
+
+// GET: /products -> Return all the products
+// GET: /products/:id -> Return a specific products
+// POST: /products ->create a product
+
+
+
