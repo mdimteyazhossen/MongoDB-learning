@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    rating:{
+        type:Number,
+        required:true
+    },
     // description: String,
     description:{
         type:String,
@@ -53,6 +57,7 @@ app.post("/products", async (req,res)=>{
 
             title:req.body.title,
             price:req.body.price,
+            rating:req.body.rating,
             description:req.body.description,
         })
         const productData= await newProduct.save();
@@ -66,15 +71,18 @@ app.post("/products", async (req,res)=>{
 
 app.get("/products",async (req,res) =>{
     try {
-        const products = await Product.find({price:{$lte:300}});
+        const price=req.query.price;
+        let products;
+        // const products = await Product.find({price:{$lte:300}});
         // const products = await Product.find().limit(2);
-        if(products){
+        if(price){
             // res.status(200).send(products)
-            res.status(200).send({
-                success:true,
-                mmessage:"return single products",
-                data: product
-            })
+            // res.status(200).send({
+            //     success:true,
+            //     mmessage:"return single products",
+            //     data: product
+            // })
+            products =await Product.find({price:{$lte:300}})
         }
         else{
             // res.status(404).send({
