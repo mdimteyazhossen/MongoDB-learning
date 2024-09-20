@@ -150,6 +150,40 @@ app.delete("/products/:id", async (req,res)=>{
         res.statusCode(500).send({ message: error.message });
     }
 })
+app.put("/products/:id",async(req,res)=>{
+    try {
+        const id=req.params.id;
+        // const updatedProduct = await Product.updateOne({_id:id},{
+        const updatedProduct = await Product.findByIdAndUpdate(
+            {_id:id},
+            {
+                $set:{
+                    title:req.body.title,
+                    price:req.body.price,
+                    description:req.body.description,
+                    rating:req.body.rating
+                },
+            },
+            {new:true}
+        )
+        if(updatedProduct){
+            // res.status(200).send(product)
+            res.status(200).send({
+                success:true,
+                mmessage:"updated single product",
+                data: updatedProduct
+            })
+        }
+        else{
+            res.status(404).send({
+                success:false,
+                message: "product not found"
+            })
+        }
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+})
 
 app.listen(port, async ()=>{
     console.log(`server is running at http://localhost:${port}`);
