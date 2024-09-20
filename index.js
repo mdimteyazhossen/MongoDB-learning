@@ -11,16 +11,29 @@ const productSchema = new mongoose.Schema({
     // title: String,
     title:{
         type :String,
-        required:true
+        required:[true,"product title is required"],
+        minlength:[3,"minimum length of the product title should be 3 "],
+        maxlength:[10,"maximum length of the product title should be 10"],
+        trim: true,//.....iphone15.....
+        enum:{
+            values: ["iphone18","samsung"],
+            message: "{VALUE} is not supported",
+        }
     },
     // price: Number,
     price:{
         type:Number,
+        min:200,
+        max:[2000,"maximum price should be 2000"],
         required:true
     },
     rating:{
         type:Number,
         required:true
+    },
+    email:{
+        type:String,
+        unique: true,
     },
     // description: String,
     description:{
